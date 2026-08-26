@@ -1,7 +1,8 @@
 import { profile } from '../data/profile'
 
 const NAV_LINKS = [
-  { href: '#experience', label: 'Experience' },
+  { href: '#projects', label: 'Projects' },
+  { href: '#companies', label: 'Companies' },
   { href: '#skills', label: 'Skills' },
   { href: '#contact', label: 'Contact' },
 ]

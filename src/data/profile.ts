@@ -9,6 +9,5 @@ export const profile = {
     // TODO: fill in your actual GitHub/LinkedIn URLs
     github: 'https://github.com/',
     linkedin: 'https://linkedin.com/',
-    resume: '/resume.pdf',
   },
 }
