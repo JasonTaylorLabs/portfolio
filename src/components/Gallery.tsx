@@ -4,6 +4,7 @@ import { apps } from '../data/apps'
 import { profile } from '../data/profile'
 import { DeviceMockup } from './DeviceMockup'
 import { MySignifyAppScreen } from './MySignifyAppScreen'
+import { OopsAppScreen } from './OopsAppScreen'
 import { SignifyAppScreen } from './SignifyAppScreen'
 import { GitHubIcon, LinkedInIcon } from './SocialIcons'
 
@@ -91,7 +92,9 @@ export function Gallery() {
                       </DeviceMockup>
                     </>
                   ) : (
-                    <DeviceMockup device={app.device} className="h-[92%] w-auto" />
+                    <DeviceMockup device={app.device} className="h-[92%] w-auto">
+                      {app.company === 'Oops' ? <OopsAppScreen /> : null}
+                    </DeviceMockup>
                   )}
                 </div>
               </div>
