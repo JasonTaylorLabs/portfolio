@@ -2,6 +2,7 @@ import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { apps } from '../data/apps'
 import { profile } from '../data/profile'
+import { DeviceMockup } from './DeviceMockup'
 
 const NAV_LINKS = [
   { href: '#companies', label: 'Companies' },
@@ -51,11 +52,11 @@ export function Gallery() {
                 <p className="mt-4 text-black/60">{app.description}</p>
                 <p className="mt-4 text-sm text-black/40">{app.tech.join(' · ')}</p>
               </div>
-              <div className="hidden aspect-4/3 w-full max-w-md items-center justify-center border border-dashed border-black/15 text-sm text-black/30 sm:flex">
+              <div className="hidden h-[60vh] max-h-[480px] w-full items-center justify-center sm:flex">
                 {app.image ? (
                   <img src={app.image} alt={app.company} className="h-full w-full object-contain" />
                 ) : (
-                  'Screenshot coming soon'
+                  <DeviceMockup device={app.device} className="h-full w-auto" />
                 )}
               </div>
             </div>

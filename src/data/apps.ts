@@ -4,6 +4,7 @@ export type App = {
   dates: string
   description: string
   tech: string[]
+  device: 'ipad' | 'iphone'
   image?: string
 }
 
@@ -15,6 +16,7 @@ export const apps: App[] = [
     description:
       "Signify's HIPAA-compliant, offline-first clinical iPad app used by clinicians nationwide for in-home patient evaluations — 3.5 million evaluations a year, supporting ~$1.6B in revenue.",
     tech: ['Swift', 'SwiftUI', 'UIKit', 'RIBs', 'MVVM', 'SwiftData', 'AVFoundation', 'PDFKit', 'APNs', 'Vapor'],
+    device: 'ipad',
   },
   {
     company: 'Oops',
@@ -23,6 +25,7 @@ export const apps: App[] = [
     description:
       'A Gen-Z personal finance app that helps users understand and manage their spending, with an in-app AI chat assistant.',
     tech: ['Swift', 'SwiftUI', 'UIKit', 'Combine', 'Firebase', 'AWS'],
+    device: 'iphone',
   },
   {
     company: 'Wãves',
@@ -31,5 +34,6 @@ export const apps: App[] = [
     description:
       'A location-based social app for coordinating real-time, in-person meetups and events — built end-to-end as founding engineer, from iOS client to backend.',
     tech: ['Swift', 'SwiftUI', 'MapKit', 'AVFoundation', 'Vapor', 'Firebase', 'GCP'],
+    device: 'iphone',
   },
 ]
