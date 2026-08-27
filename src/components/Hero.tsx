@@ -21,12 +21,17 @@ export function Hero() {
     if (!root) return
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
+    let safety: number | undefined
     const ctx = gsap.context(() => {
-      gsap.fromTo(
-        '[data-hero-fade]',
-        { autoAlpha: 0, y: 28 },
-        { autoAlpha: 1, y: 0, duration: 1.1, ease: 'power3.out', stagger: 0.1, delay: 0.2 },
-      )
+      const intro = gsap.from('[data-hero-fade]', {
+        autoAlpha: 0,
+        y: 28,
+        duration: 1.1,
+        ease: 'power3.out',
+        stagger: 0.1,
+        delay: 0.2,
+        onComplete: () => window.clearTimeout(safety),
+      })
       gsap.to('[data-scroll-cue]', {
         y: 8,
         repeat: -1,
@@ -34,9 +39,16 @@ export function Hero() {
         duration: 1.2,
         ease: 'sine.inOut',
       })
+      // Safety net: setTimeout still fires when requestAnimationFrame is throttled
+      // (background tab, suspended compositor), so the hero can never stay hidden —
+      // force the entrance to its end state if it hasn't finished on its own.
+      safety = window.setTimeout(() => intro.progress(1), 1600)
     }, root)
 
-    return () => ctx.revert()
+    return () => {
+      window.clearTimeout(safety)
+      ctx.revert()
+    }
   }, [])
 
   return (
