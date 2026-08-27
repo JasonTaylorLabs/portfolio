@@ -8,7 +8,7 @@ type DeviceMockupProps = {
 
 // Metallic edge: a bright top highlight and dark bottom to read as a rounded rail.
 const RIM_SHADOW =
-  'inset 0 0 0 1px rgba(255,255,255,0.10), inset 0 1.5px 2px rgba(255,255,255,0.14), inset 0 -1.5px 2px rgba(0,0,0,0.55)'
+  '0 0 0 1px rgba(255,255,255,0.07), inset 0 0 0 1px rgba(255,255,255,0.12), inset 0 1.5px 2px rgba(255,255,255,0.16), inset 0 -1.5px 2px rgba(0,0,0,0.55)'
 const FRAME_GRADIENT = 'linear-gradient(145deg, #2b2b2e 0%, #1a1a1c 42%, #131315 100%)'
 const BUTTON_BG = '#141416'
 
@@ -41,7 +41,7 @@ export function DeviceMockup({ device, className, children }: DeviceMockupProps)
 
       {/* Frame */}
       <div
-        className={`relative h-full w-full ${outerRadius} ${isTablet ? 'p-[2%]' : 'p-[3%]'} shadow-[0_30px_70px_-25px_rgba(0,0,0,0.45)]`}
+        className={`relative h-full w-full ${outerRadius} ${isTablet ? 'p-[2%]' : 'p-[3%]'} shadow-[0_60px_120px_-35px_rgba(0,0,0,0.9)]`}
         style={{ background: FRAME_GRADIENT }}
       >
         {/* Metallic rim highlight */}
@@ -57,7 +57,10 @@ export function DeviceMockup({ device, className, children }: DeviceMockupProps)
           {isTablet && (
             <div className="absolute top-[1.3%] left-1/2 z-20 h-[0.9%] w-[0.7%] -translate-x-1/2 rounded-full bg-[#1b2a33] ring-1 ring-black/30" />
           )}
-          {children ?? <div className="h-full w-full bg-black/[0.03]" />}
+          {children ?? (
+            /* Idle device: dark glass with a faint diagonal sheen */
+            <div className="h-full w-full bg-[linear-gradient(160deg,#181820_0%,#0b0b10_55%,#10101a_100%)]" />
+          )}
         </div>
       </div>
     </div>
