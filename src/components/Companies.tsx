@@ -6,7 +6,7 @@ export function Companies() {
       <h2 className="text-sm text-black/40">Where I've Worked</h2>
       <div className="mt-8 space-y-10">
         {companies.map((entry) => (
-          <div key={entry.company} className="flex flex-col justify-between gap-1 sm:flex-row sm:items-baseline sm:gap-4">
+          <div key={`${entry.company}-${entry.role}`} className="flex flex-col justify-between gap-1 sm:flex-row sm:items-baseline sm:gap-4">
             <div>
               <h3 className="font-light">
                 {entry.role} &middot; {entry.company}
