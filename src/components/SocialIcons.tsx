@@ -10,6 +10,15 @@ export function GitHubIcon({ className }: IconProps) {
   )
 }
 
+export function MailIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className={className} xmlns="http://www.w3.org/2000/svg">
+      <rect x="2.75" y="4.75" width="18.5" height="14.5" rx="2.5" />
+      <path d="m3.5 6 8.5 7 8.5-7" />
+    </svg>
+  )
+}
+
 export function LinkedInIcon({ className }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" className={className} xmlns="http://www.w3.org/2000/svg">
