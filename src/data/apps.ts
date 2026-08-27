@@ -1,3 +1,8 @@
+export type Stat = {
+  value: string
+  label: string
+}
+
 export type App = {
   company: string
   role: string
@@ -5,6 +10,7 @@ export type App = {
   description: string
   tech: string[]
   device: 'ipad' | 'iphone'
+  stats?: Stat[]
   image?: string
 }
 
@@ -14,9 +20,14 @@ export const apps: App[] = [
     role: 'Staff iOS Engineer',
     dates: 'Nov. 2023 – Present',
     description:
-      "Signify's HIPAA-compliant, offline-first clinical iPad app used by clinicians nationwide for in-home patient evaluations — 3.5 million evaluations a year, supporting ~$1.6B in revenue.",
+      "The HIPAA-compliant, offline-first iPad app clinicians use to run Signify's In-Home Health Evaluations nationwide — the visits behind millions of closed care gaps every year.",
     tech: ['Swift', 'SwiftUI', 'UIKit', 'RIBs', 'MVVM', 'SwiftData', 'AVFoundation', 'PDFKit', 'APNs', 'Vapor'],
     device: 'ipad',
+    stats: [
+      { value: '3.5M', label: 'In-home evaluations / year' },
+      { value: '13M', label: 'Care gaps impacted' },
+      { value: '11K+', label: 'Clinicians nationwide' },
+    ],
   },
   {
     company: 'Oops',

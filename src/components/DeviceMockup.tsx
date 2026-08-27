@@ -1,24 +1,24 @@
+import type { ReactNode } from 'react'
+
 type DeviceMockupProps = {
   device: 'ipad' | 'iphone'
   className?: string
+  children?: ReactNode
 }
 
-export function DeviceMockup({ device, className }: DeviceMockupProps) {
-  if (device === 'ipad') {
-    return (
-      <svg viewBox="0 0 300 400" className={className} xmlns="http://www.w3.org/2000/svg">
-        <rect x="4" y="4" width="292" height="392" rx="26" fill="white" stroke="black" strokeOpacity="0.5" strokeWidth="3" />
-        <rect x="20" y="20" width="260" height="360" rx="3" fill="black" fillOpacity="0.03" />
-        <circle cx="150" cy="12" r="2" fill="black" fillOpacity="0.4" />
-      </svg>
-    )
-  }
+export function DeviceMockup({ device, className, children }: DeviceMockupProps) {
+  const isTablet = device === 'ipad'
 
   return (
-    <svg viewBox="0 0 200 400" className={className} xmlns="http://www.w3.org/2000/svg">
-      <rect x="4" y="4" width="192" height="392" rx="38" fill="white" stroke="black" strokeOpacity="0.5" strokeWidth="3" />
-      <rect x="16" y="16" width="168" height="368" rx="3" fill="black" fillOpacity="0.03" />
-      <rect x="72" y="18" width="56" height="18" rx="9" fill="black" fillOpacity="0.5" />
-    </svg>
+    <div
+      className={`${className ?? ''} relative ${isTablet ? 'aspect-3/4 rounded-[1.9rem] p-[1.6%]' : 'aspect-9/19 rounded-[2.6rem] p-[2.4%]'} bg-[#1c1c1e] shadow-[0_25px_60px_-20px_rgba(0,0,0,0.35)]`}
+    >
+      <div className={`relative h-full w-full overflow-hidden ${isTablet ? 'rounded-[1.1rem]' : 'rounded-[1.9rem]'} bg-white`}>
+        {!isTablet && (
+          <div className="absolute top-[2%] left-1/2 z-10 h-[3.5%] w-[32%] -translate-x-1/2 rounded-full bg-[#1c1c1e]" />
+        )}
+        {children ?? <div className="h-full w-full bg-black/[0.03]" />}
+      </div>
+    </div>
   )
 }

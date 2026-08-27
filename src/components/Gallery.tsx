@@ -3,6 +3,7 @@ import { motion, useScroll, useTransform } from 'framer-motion'
 import { apps } from '../data/apps'
 import { profile } from '../data/profile'
 import { DeviceMockup } from './DeviceMockup'
+import { SignifyAppScreen } from './SignifyAppScreen'
 import { GitHubIcon, LinkedInIcon } from './SocialIcons'
 
 const SECTION_LINKS = [
@@ -64,13 +65,25 @@ export function Gallery() {
                   </p>
                   <h2 className="mt-2 text-2xl font-light sm:text-4xl">{app.company}</h2>
                   <p className="mt-4 text-black/60">{app.description}</p>
-                  <p className="mt-4 text-sm text-black/40">{app.tech.join(' · ')}</p>
+                  {app.stats && (
+                    <div className="mt-6 flex gap-8">
+                      {app.stats.map((stat) => (
+                        <div key={stat.label}>
+                          <div className="text-2xl font-light text-black sm:text-3xl">{stat.value}</div>
+                          <div className="mt-1 max-w-28 text-xs text-black/40">{stat.label}</div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <p className="mt-6 text-sm text-black/40">{app.tech.join(' · ')}</p>
                 </div>
                 <div className="hidden h-[85%] w-full items-center justify-center sm:flex">
                   {app.image ? (
                     <img src={app.image} alt={app.company} className="h-full w-full object-contain" />
                   ) : (
-                    <DeviceMockup device={app.device} className="h-full w-auto" />
+                    <DeviceMockup device={app.device} className="h-full w-auto">
+                      {app.company.includes('Signify') ? <SignifyAppScreen /> : null}
+                    </DeviceMockup>
                   )}
                 </div>
               </div>
