@@ -6,8 +6,8 @@ export const profile = {
     "7+ years shipping high-impact, user-facing features across the Apple ecosystem — from HIPAA-compliant clinical apps to social products and media playback experiences.",
   email: 'hello@jasonschneider.tech',
   links: {
-    // TODO: fill in your actual GitHub/LinkedIn URLs
-    github: 'https://github.com/',
+    // TODO: fill in your actual LinkedIn URL
+    github: 'https://github.com/js8developer',
     linkedin: 'https://linkedin.com/',
   },
 }
