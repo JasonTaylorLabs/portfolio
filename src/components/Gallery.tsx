@@ -79,20 +79,20 @@ export function Gallery() {
                   )}
                   <p className="mt-6 text-sm text-black/40">{app.tech.join(' · ')}</p>
                 </div>
-                <div className="hidden h-[85%] w-full items-end justify-center gap-[3%] sm:flex">
+                <div className="hidden h-[85%] min-w-0 flex-1 items-end justify-center gap-[3%] overflow-hidden [container-type:size] sm:flex">
                   {app.image ? (
-                    <img src={app.image} alt={app.company} className="h-full w-full object-contain" />
+                    <img src={app.image} alt={app.company} className="max-h-full max-w-full object-contain" />
                   ) : app.company.includes('Signify') ? (
                     <>
-                      <DeviceMockup device="ipad" className="h-full w-auto">
+                      <DeviceMockup device="ipad" className="h-[min(94cqh,86cqw)] w-auto">
                         <SignifyAppScreen />
                       </DeviceMockup>
-                      <DeviceMockup device="iphone" className="h-[66%] w-auto">
+                      <DeviceMockup device="iphone" className="h-[min(62cqh,57cqw)] w-auto">
                         <MySignifyAppScreen />
                       </DeviceMockup>
                     </>
                   ) : (
-                    <DeviceMockup device={app.device} className="h-[92%] w-auto">
+                    <DeviceMockup device={app.device} className="h-[min(92cqh,195cqw)] w-auto">
                       {app.company === 'Oops' ? <OopsAppScreen /> : null}
                     </DeviceMockup>
                   )}
