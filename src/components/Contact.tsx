@@ -6,7 +6,7 @@ export function Contact() {
     <section id="contact" className="mx-auto max-w-2xl px-6 py-24 sm:px-12">
       <h2 className="text-sm text-black/40">Contact</h2>
       <p className="mt-4 max-w-md text-black/60">
-        Reach out directly or find me on GitHub and LinkedIn.
+        Reach out directly or find me on LinkedIn.
       </p>
       <a
         href={`mailto:${profile.email}`}
