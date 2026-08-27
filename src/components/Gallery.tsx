@@ -3,6 +3,7 @@ import { motion, useScroll, useTransform } from 'framer-motion'
 import { apps } from '../data/apps'
 import { profile } from '../data/profile'
 import { DeviceMockup } from './DeviceMockup'
+import { MySignifyAppScreen } from './MySignifyAppScreen'
 import { SignifyAppScreen } from './SignifyAppScreen'
 import { GitHubIcon, LinkedInIcon } from './SocialIcons'
 
@@ -77,13 +78,20 @@ export function Gallery() {
                   )}
                   <p className="mt-6 text-sm text-black/40">{app.tech.join(' · ')}</p>
                 </div>
-                <div className="hidden h-[85%] w-full items-center justify-center sm:flex">
+                <div className="hidden h-[85%] w-full items-end justify-center gap-[3%] sm:flex">
                   {app.image ? (
                     <img src={app.image} alt={app.company} className="h-full w-full object-contain" />
+                  ) : app.company.includes('Signify') ? (
+                    <>
+                      <DeviceMockup device="ipad" className="h-full w-auto">
+                        <SignifyAppScreen />
+                      </DeviceMockup>
+                      <DeviceMockup device="iphone" className="h-[66%] w-auto">
+                        <MySignifyAppScreen />
+                      </DeviceMockup>
+                    </>
                   ) : (
-                    <DeviceMockup device={app.device} className="h-full w-auto">
-                      {app.company.includes('Signify') ? <SignifyAppScreen /> : null}
-                    </DeviceMockup>
+                    <DeviceMockup device={app.device} className="h-[92%] w-auto" />
                   )}
                 </div>
               </div>
