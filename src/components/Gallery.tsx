@@ -3,13 +3,12 @@ import { motion, useScroll, useTransform } from 'framer-motion'
 import { apps } from '../data/apps'
 import { profile } from '../data/profile'
 import { DeviceMockup } from './DeviceMockup'
+import { GitHubIcon, LinkedInIcon } from './SocialIcons'
 
-const NAV_LINKS = [
+const SECTION_LINKS = [
   { href: '#companies', label: 'Companies' },
   { href: '#skills', label: 'Skills' },
   { href: '#contact', label: 'Contact' },
-  { href: profile.links.github, label: 'GitHub', external: true },
-  { href: profile.links.linkedin, label: 'LinkedIn', external: true },
 ]
 
 export function Gallery() {
@@ -24,18 +23,32 @@ export function Gallery() {
           <h1 className="text-3xl font-light tracking-tight sm:text-5xl">{profile.name}</h1>
           <p className="mt-1 text-sm text-black/40 sm:text-base">{profile.title}</p>
           <nav className="mt-6 flex flex-col gap-1 text-sm">
-            {NAV_LINKS.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                target={link.external ? '_blank' : undefined}
-                rel={link.external ? 'noreferrer' : undefined}
-                className="w-fit text-black/40 transition-colors hover:text-black"
-              >
+            {SECTION_LINKS.map((link) => (
+              <a key={link.label} href={link.href} className="w-fit text-black/40 transition-colors hover:text-black">
                 {link.label}
               </a>
             ))}
           </nav>
+          <div className="mt-4 flex items-center gap-4">
+            <a
+              href={profile.links.github}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="GitHub"
+              className="text-black/40 transition-colors hover:text-black"
+            >
+              <GitHubIcon className="h-5 w-5" />
+            </a>
+            <a
+              href={profile.links.linkedin}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="LinkedIn"
+              className="text-black/40 transition-colors hover:text-black"
+            >
+              <LinkedInIcon className="h-5 w-5" />
+            </a>
+          </div>
         </div>
 
         <div className="relative min-h-0 flex-1 overflow-hidden">
