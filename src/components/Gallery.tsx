@@ -64,12 +64,12 @@ function AppShowcase({ app }: { app: App }) {
   )
 }
 
-/** Soft indigo pool of light the devices stand in. */
+/** Soft neutral pool that grounds the devices on the page. */
 function StageGlow() {
   return (
     <div
       aria-hidden="true"
-      className="absolute inset-x-[8%] top-[30%] bottom-[-15%] rounded-full bg-[radial-gradient(50%_50%_at_50%_50%,rgba(138,147,255,0.13),transparent_70%)] blur-2xl"
+      className="absolute inset-x-[10%] top-[45%] bottom-[-12%] rounded-[50%] bg-[radial-gradient(50%_50%_at_50%_50%,rgba(0,0,0,0.06),transparent_70%)] blur-2xl"
     />
   )
 }

@@ -8,7 +8,7 @@ export function Contact() {
     <section id="contact" className="relative overflow-hidden">
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-[radial-gradient(50%_60%_at_50%_100%,rgba(138,147,255,0.10),transparent_70%)]"
+        className="absolute inset-0 bg-[radial-gradient(50%_60%_at_50%_100%,rgba(0,0,0,0.035),transparent_70%)]"
       />
       <div className="relative mx-auto max-w-4xl px-6 py-32 sm:px-10">
         <Reveal>
@@ -29,7 +29,7 @@ export function Contact() {
           <div className="mt-9 flex flex-col gap-3 sm:flex-row">
             <a
               href={`mailto:${profile.email}`}
-              className="flex w-fit items-center gap-2.5 rounded-full bg-cream px-5 py-2.5 text-sm font-medium text-ink transition-colors duration-200 hover:bg-accent"
+              className="flex w-fit items-center gap-2.5 rounded-full bg-cream px-5 py-2.5 text-sm font-medium text-ink transition-opacity duration-200 hover:opacity-80"
             >
               <MailIcon className="h-4 w-4" />
               {profile.email}

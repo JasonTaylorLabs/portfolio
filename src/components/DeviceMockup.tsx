@@ -41,7 +41,7 @@ export function DeviceMockup({ device, className, children }: DeviceMockupProps)
 
       {/* Frame */}
       <div
-        className={`relative h-full w-full ${outerRadius} ${isTablet ? 'p-[2%]' : 'p-[3%]'} shadow-[0_60px_120px_-35px_rgba(0,0,0,0.9)]`}
+        className={`relative h-full w-full ${outerRadius} ${isTablet ? 'p-[2%]' : 'p-[3%]'} shadow-[0_35px_70px_-30px_rgba(0,0,0,0.32)]`}
         style={{ background: FRAME_GRADIENT }}
       >
         {/* Metallic rim highlight */}

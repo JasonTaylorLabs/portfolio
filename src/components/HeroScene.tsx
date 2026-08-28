@@ -37,10 +37,10 @@ const FRAGMENT_SHADER = /* glsl */ `
   void main() {
     float d = distance(gl_PointCoord, vec2(0.5));
     float a = smoothstep(0.5, 0.15, d);
-    vec3 base = vec3(0.54, 0.58, 1.0);   // indigo
-    vec3 crest = vec3(0.96, 0.95, 0.92); // cream highlights on wave crests
+    vec3 base = vec3(0.09, 0.09, 0.11);  // near-black (normal-blended over white)
+    vec3 crest = vec3(0.42, 0.42, 0.46); // grey highlights on wave crests
     vec3 color = mix(base, crest, vCrest);
-    gl_FragColor = vec4(color, a * vFade * 0.55);
+    gl_FragColor = vec4(color, a * vFade * 0.5);
   }
 `
 
@@ -128,7 +128,7 @@ export function HeroScene() {
         fragmentShader: FRAGMENT_SHADER,
         transparent: true,
         depthWrite: false,
-        blending: THREE.AdditiveBlending,
+        blending: THREE.NormalBlending,
       })
       const points = new THREE.Points(geometry, material)
       points.position.y = -0.9

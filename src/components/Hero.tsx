@@ -53,10 +53,8 @@ export function Hero() {
 
   return (
     <header id="top" ref={rootRef} className="relative flex min-h-svh flex-col overflow-hidden">
-      {/* Aurora gradients (also the no-WebGL fallback) + lazy three.js scene */}
+      {/* Lazy three.js particle field, faded into the page at the bottom edge */}
       <div aria-hidden="true" className="absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(55%_45%_at_70%_12%,rgba(138,147,255,0.13),transparent_70%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(45%_40%_at_15%_85%,rgba(138,147,255,0.08),transparent_70%)]" />
         <HeroScene />
         <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-ink" />
       </div>

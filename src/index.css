@@ -8,14 +8,16 @@
   --font-display: 'Instrument Serif', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
   --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 
-  --color-ink: #08080b;
-  --color-cream: #f4f2ec;
-  --color-accent: #8a93ff;
+  /* Monochrome base. Color enters only through project/company brand
+     logos and the recreated app screens. */
+  --color-ink: #ffffff; /* background / foreground-on-dark */
+  --color-cream: #111113; /* primary text / dark surfaces */
+  --color-accent: #111113; /* neutral emphasis (kept a token so a brand hue can slot in later) */
 }
 
 html {
   scroll-behavior: smooth;
-  background: #08080b;
+  background: #ffffff;
 }
 
 body {
@@ -25,12 +27,12 @@ body {
 }
 
 ::selection {
-  background: #8a93ff;
-  color: #08080b;
+  background: #111113;
+  color: #ffffff;
 }
 
 :focus-visible {
-  outline: 1.5px solid rgba(244, 242, 236, 0.7);
+  outline: 1.5px solid rgba(0, 0, 0, 0.55);
   outline-offset: 4px;
   border-radius: 2px;
 }
@@ -41,7 +43,7 @@ body {
   inset: 0;
   z-index: 70;
   pointer-events: none;
-  opacity: 0.05;
+  opacity: 0.035;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 240px 240px;
 }
