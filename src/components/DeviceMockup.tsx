@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 
 type DeviceMockupProps = {
   device: 'ipad' | 'iphone'
@@ -6,56 +6,115 @@ type DeviceMockupProps = {
   children?: ReactNode
 }
 
-// Metallic edge: a bright top highlight and dark bottom to read as a rounded rail.
+/**
+ * Corner geometry. CSS percentage radii are elliptical (X% of width by X% of
+ * height), which visibly "cuts" the corners of a tall phone — so every radius
+ * is written as `H% / V%` with V = H × aspect-ratio, making the corners
+ * perfectly circular. The screen radius is concentric with the body
+ * (screen = body − bezel), which is what makes a frame read as a real device.
+ */
+const SPEC = {
+  iphone: {
+    aspect: 'aspect-9/19',
+    ratio: 9 / 19,
+    body: 17, // corner radius, % of width
+    bezel: 3.4, // uniform bezel, % of width
+  },
+  ipad: {
+    aspect: 'aspect-3/4',
+    ratio: 3 / 4,
+    body: 8,
+    bezel: 4.2,
+  },
+} as const
+
+const round = (h: number, ratio: number) => `${h}% / ${h * ratio}%`
+
+// Machined band: bright top-edge catchlight, darker bottom, hairline outline.
 const RIM_SHADOW =
-  '0 0 0 1px rgba(255,255,255,0.07), inset 0 0 0 1px rgba(255,255,255,0.12), inset 0 1.5px 2px rgba(255,255,255,0.16), inset 0 -1.5px 2px rgba(0,0,0,0.55)'
-const FRAME_GRADIENT = 'linear-gradient(145deg, #2b2b2e 0%, #1a1a1c 42%, #131315 100%)'
-const BUTTON_BG = '#141416'
+  '0 0 0 1px rgba(0,0,0,0.28), inset 0 0 0 1.5px rgba(255,255,255,0.14), inset 0 2px 3px rgba(255,255,255,0.16), inset 0 -2px 3px rgba(0,0,0,0.5)'
+const FRAME_GRADIENT = 'linear-gradient(145deg, #3a3a3e 0%, #232326 30%, #161618 70%, #1d1d20 100%)'
+const BUTTON_GRADIENT = 'linear-gradient(90deg, #3c3c40, #232327)'
+const BUTTON_GRADIENT_V = 'linear-gradient(180deg, #3c3c40, #232327)'
 
 export function DeviceMockup({ device, className, children }: DeviceMockupProps) {
+  const spec = SPEC[device]
   const isTablet = device === 'ipad'
-  const outerRadius = isTablet ? 'rounded-[6.5%]' : 'rounded-[13%]'
-  const screenRadius = isTablet ? 'rounded-[5%]' : 'rounded-[10.5%]'
+
+  const bodyRadius: CSSProperties = { borderRadius: round(spec.body, spec.ratio) }
+  const screenRadius: CSSProperties = {
+    borderRadius: round(spec.body - spec.bezel, spec.ratio),
+  }
 
   return (
-    <div className={`${className ?? ''} relative ${isTablet ? 'aspect-3/4' : 'aspect-9/19'}`}>
-      {/* Side buttons */}
+    <div className={`${className ?? ''} relative ${spec.aspect}`}>
+      {/* Side buttons — metallic, slightly recessed behind the body edge */}
       {isTablet ? (
         <>
-          {/* power on top edge */}
-          <span className="absolute top-[-1%] right-[16%] h-[1.2%] w-[8%] rounded-t-[2px]" style={{ background: BUTTON_BG }} />
-          {/* volume on right edge */}
-          <span className="absolute top-[7%] right-[-1%] h-[6%] w-[1.1%] rounded-r-[2px]" style={{ background: BUTTON_BG }} />
-          <span className="absolute top-[14.5%] right-[-1%] h-[6%] w-[1.1%] rounded-r-[2px]" style={{ background: BUTTON_BG }} />
+          {/* top power button */}
+          <span
+            className="absolute top-[-0.8%] right-[15%] h-[1%] w-[7%] rounded-t-[3px]"
+            style={{ background: BUTTON_GRADIENT_V }}
+          />
+          {/* right-edge volume buttons */}
+          <span
+            className="absolute top-[6.5%] right-[-0.9%] h-[5%] w-[1.2%] rounded-r-[3px]"
+            style={{ background: BUTTON_GRADIENT }}
+          />
+          <span
+            className="absolute top-[12.5%] right-[-0.9%] h-[5%] w-[1.2%] rounded-r-[3px]"
+            style={{ background: BUTTON_GRADIENT }}
+          />
         </>
       ) : (
         <>
-          {/* action + volume on left edge */}
-          <span className="absolute top-[18%] left-[-1.3%] h-[4%] w-[1.5%] rounded-l-[2px]" style={{ background: BUTTON_BG }} />
-          <span className="absolute top-[27%] left-[-1.3%] h-[8%] w-[1.5%] rounded-l-[2px]" style={{ background: BUTTON_BG }} />
-          <span className="absolute top-[37%] left-[-1.3%] h-[8%] w-[1.5%] rounded-l-[2px]" style={{ background: BUTTON_BG }} />
-          {/* side button on right edge */}
-          <span className="absolute top-[30%] right-[-1.3%] h-[12%] w-[1.5%] rounded-r-[2px]" style={{ background: BUTTON_BG }} />
+          {/* action button + volume rocker, left edge */}
+          <span
+            className="absolute top-[17%] left-[-1.1%] h-[3.4%] w-[1.4%] rounded-l-[3px]"
+            style={{ background: BUTTON_GRADIENT }}
+          />
+          <span
+            className="absolute top-[24.5%] left-[-1.1%] h-[6.5%] w-[1.4%] rounded-l-[3px]"
+            style={{ background: BUTTON_GRADIENT }}
+          />
+          <span
+            className="absolute top-[32.5%] left-[-1.1%] h-[6.5%] w-[1.4%] rounded-l-[3px]"
+            style={{ background: BUTTON_GRADIENT }}
+          />
+          {/* side (power) button, right edge */}
+          <span
+            className="absolute top-[26%] right-[-1.1%] h-[10.5%] w-[1.4%] rounded-r-[3px]"
+            style={{ background: BUTTON_GRADIENT }}
+          />
         </>
       )}
 
-      {/* Frame */}
+      {/* Body */}
       <div
-        className={`relative h-full w-full ${outerRadius} ${isTablet ? 'p-[2%]' : 'p-[3%]'} shadow-[0_35px_70px_-30px_rgba(0,0,0,0.32)]`}
-        style={{ background: FRAME_GRADIENT }}
+        className="relative h-full w-full shadow-[0_35px_70px_-30px_rgba(0,0,0,0.35)]"
+        style={{ ...bodyRadius, background: FRAME_GRADIENT, padding: `${spec.bezel}%` }}
       >
-        {/* Metallic rim highlight */}
-        <div className={`pointer-events-none absolute inset-0 ${outerRadius}`} style={{ boxShadow: RIM_SHADOW }} />
+        {/* Machined-band rim light */}
+        <div className="pointer-events-none absolute inset-0 z-10" style={{ ...bodyRadius, boxShadow: RIM_SHADOW }} />
+
+        {/* Front camera lives in the top bezel on an iPad */}
+        {isTablet && (
+          <span
+            className="absolute top-[1.35%] left-1/2 z-10 h-[0.9%] w-[0.68%] -translate-x-1/2 rounded-full"
+            style={{ background: 'radial-gradient(circle at 35% 35%, #3d4a63, #10131c 70%)' }}
+          />
+        )}
 
         {/* Screen */}
-        <div className={`relative h-full w-full overflow-hidden ${screenRadius} bg-white`}>
+        <div className="relative h-full w-full overflow-hidden bg-white" style={screenRadius}>
+          {/* Dynamic island (true proportions: ~29% wide, ~4.2% tall) */}
           {!isTablet && (
-            <div className="absolute top-[1.6%] left-1/2 z-20 flex h-[3.1%] w-[30%] -translate-x-1/2 items-center justify-end rounded-full bg-black pr-[3%]">
-              <span className="h-[32%] w-[10%] rounded-full bg-[#1b2a33]" />
+            <div className="absolute top-[1.5%] left-1/2 z-20 flex h-[4.2%] w-[29%] -translate-x-1/2 items-center justify-end rounded-full bg-black pr-[2.5%]">
+              <span
+                className="aspect-square h-[38%] rounded-full"
+                style={{ background: 'radial-gradient(circle at 35% 35%, #2c3550, #05070c 72%)' }}
+              />
             </div>
-          )}
-          {isTablet && (
-            <div className="absolute top-[1.3%] left-1/2 z-20 h-[0.9%] w-[0.7%] -translate-x-1/2 rounded-full bg-[#1b2a33] ring-1 ring-black/30" />
           )}
           {children ?? (
             /* Idle device: dark glass with a faint diagonal sheen */
