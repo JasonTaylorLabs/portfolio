@@ -45,16 +45,16 @@ function AppShowcase({ app }: { app: App }) {
   }
   if (app.company.includes('Signify')) {
     return (
-      <div className="flex h-full flex-col items-center justify-end gap-[3.5cqh]">
+      <div className="flex h-full flex-col items-center justify-end gap-[6cqh]">
         <div className="flex min-h-0 flex-1 items-end justify-center gap-[3cqw]">
-          <DeviceMockup device="ipad" className="h-[min(84cqh,78cqw)] w-auto">
+          <DeviceMockup device="ipad" className="h-[min(80cqh,74cqw)] w-auto">
             <SignifyLogoScreen />
           </DeviceMockup>
-          <DeviceMockup device="iphone" className="h-[min(55cqh,50cqw)] w-auto">
+          <DeviceMockup device="iphone" className="h-[min(52cqh,47cqw)] w-auto">
             <MySignifyLogoScreen />
           </DeviceMockup>
         </div>
-        <CvsHealthLogo className="w-[min(32cqw,260px)] shrink-0" />
+        <CvsHealthLogo className="w-[min(40cqw,330px)] shrink-0" />
       </div>
     )
   }
