@@ -4,11 +4,9 @@ import type { App } from '../data/apps'
 import { apps } from '../data/apps'
 import { useMediaQuery } from '../hooks/useMediaQuery'
 import { DeviceMockup } from './DeviceMockup'
-import { MySignifyAppScreen } from './MySignifyAppScreen'
-import { OopsAppScreen } from './OopsAppScreen'
+import { MySignifyLogoScreen, OopsLogoScreen, SignifyLogoScreen } from './LogoScreens'
 import { Reveal } from './Reveal'
 import { SectionHeading } from './SectionHeading'
-import { SignifyAppScreen } from './SignifyAppScreen'
 
 const pad = (n: number) => String(n).padStart(2, '0')
 
@@ -49,17 +47,17 @@ function AppShowcase({ app }: { app: App }) {
     return (
       <>
         <DeviceMockup device="ipad" className="h-[min(94cqh,86cqw)] w-auto">
-          <SignifyAppScreen />
+          <SignifyLogoScreen />
         </DeviceMockup>
         <DeviceMockup device="iphone" className="h-[min(62cqh,57cqw)] w-auto">
-          <MySignifyAppScreen />
+          <MySignifyLogoScreen />
         </DeviceMockup>
       </>
     )
   }
   return (
     <DeviceMockup device={app.device} className="h-[min(92cqh,195cqw)] w-auto">
-      {app.company === 'Oops' ? <OopsAppScreen /> : null}
+      {app.company === 'Oops' ? <OopsLogoScreen /> : null}
     </DeviceMockup>
   )
 }
