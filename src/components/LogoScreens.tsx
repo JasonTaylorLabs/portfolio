@@ -5,15 +5,18 @@
 
 const asset = (file: string) => `${import.meta.env.BASE_URL}logos/${file}`
 
-/** iPad: official CVS Health + signifyhealth lockups co-branded on white. */
+/** iPad: official signifyhealth lockup centered on white. */
 export function SignifyLogoScreen() {
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center gap-[7%] bg-white">
-      <img src={asset('cvshealth.svg')} alt="CVS Health" className="w-[46%]" />
-      <span aria-hidden="true" className="h-px w-[24%] bg-black/10" />
-      <img src={asset('signifyhealth.png')} alt="Signify Health" className="w-[56%]" />
+    <div className="flex h-full w-full items-center justify-center bg-white">
+      <img src={asset('signifyhealth.png')} alt="Signify Health" className="w-[62%]" />
     </div>
   )
+}
+
+/** Official CVS Health logo, for placement outside the devices. */
+export function CvsHealthLogo({ className }: { className?: string }) {
+  return <img src={asset('cvshealth.svg')} alt="CVS Health" className={className} />
 }
 
 /**

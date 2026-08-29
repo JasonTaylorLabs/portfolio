@@ -4,7 +4,7 @@ import type { App } from '../data/apps'
 import { apps } from '../data/apps'
 import { useMediaQuery } from '../hooks/useMediaQuery'
 import { DeviceMockup } from './DeviceMockup'
-import { MySignifyLogoScreen, OopsLogoScreen, SignifyLogoScreen } from './LogoScreens'
+import { CvsHealthLogo, MySignifyLogoScreen, OopsLogoScreen, SignifyLogoScreen } from './LogoScreens'
 import { Reveal } from './Reveal'
 import { SectionHeading } from './SectionHeading'
 
@@ -45,14 +45,17 @@ function AppShowcase({ app }: { app: App }) {
   }
   if (app.company.includes('Signify')) {
     return (
-      <>
-        <DeviceMockup device="ipad" className="h-[min(94cqh,86cqw)] w-auto">
-          <SignifyLogoScreen />
-        </DeviceMockup>
-        <DeviceMockup device="iphone" className="h-[min(62cqh,57cqw)] w-auto">
-          <MySignifyLogoScreen />
-        </DeviceMockup>
-      </>
+      <div className="flex h-full flex-col items-center justify-end gap-[4cqh]">
+        <div className="flex min-h-0 flex-1 items-end justify-center gap-[3cqw]">
+          <DeviceMockup device="ipad" className="h-[min(84cqh,78cqw)] w-auto">
+            <SignifyLogoScreen />
+          </DeviceMockup>
+          <DeviceMockup device="iphone" className="h-[min(55cqh,50cqw)] w-auto">
+            <MySignifyLogoScreen />
+          </DeviceMockup>
+        </div>
+        <CvsHealthLogo className="w-[min(22cqw,180px)] shrink-0" />
+      </div>
     )
   }
   return (
