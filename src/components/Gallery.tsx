@@ -4,7 +4,13 @@ import type { App } from '../data/apps'
 import { apps } from '../data/apps'
 import { useMediaQuery } from '../hooks/useMediaQuery'
 import { DeviceMockup } from './DeviceMockup'
-import { CvsHealthLogo, MySignifyLogoScreen, OopsLogoScreen, SignifyLogoScreen } from './LogoScreens'
+import {
+  CvsHealthLogo,
+  MySignifyLogoScreen,
+  OopsLogoScreen,
+  SignifyLogoScreen,
+  WavesLogoScreen,
+} from './LogoScreens'
 import { Reveal } from './Reveal'
 import { SectionHeading } from './SectionHeading'
 
@@ -60,7 +66,7 @@ function AppShowcase({ app }: { app: App }) {
   }
   return (
     <DeviceMockup device={app.device} className="h-[min(92cqh,195cqw)] w-auto">
-      {app.company === 'Oops' ? <OopsLogoScreen /> : null}
+      {app.company === 'Oops' ? <OopsLogoScreen /> : app.company === 'Wãves' ? <WavesLogoScreen /> : null}
     </DeviceMockup>
   )
 }
