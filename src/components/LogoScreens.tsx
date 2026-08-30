@@ -44,11 +44,17 @@ export function OopsLogoScreen() {
   )
 }
 
-/** iPhone: the Wãves circular brand tile (founder-provided) centered on black. */
+/**
+ * iPhone: the Wãves mark as an app-icon tile on black (mirroring the Oops
+ * treatment). The source art is a circle, so the image is zoomed ~√2 inside a
+ * rounded-square mask — only the blue center fills the tile, W intact.
+ */
 export function WavesLogoScreen() {
   return (
-    <div className="flex h-full w-full items-center justify-center bg-black">
-      <img src={asset('waves.png')} alt="Wãves" className="w-[58%] rounded-full" />
+    <div className="@container flex h-full w-full items-center justify-center bg-black">
+      <div className="flex aspect-square w-[42%] items-center justify-center overflow-hidden rounded-[10cqw] shadow-[0_4cqw_14cqw_rgba(0,0,0,0.6)] ring-1 ring-white/10">
+        <img src={asset('waves.png')} alt="Wãves" className="w-[144%] max-w-none shrink-0" />
+      </div>
     </div>
   )
 }
