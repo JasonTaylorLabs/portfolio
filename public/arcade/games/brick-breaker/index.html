@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Brick Breaker — Arcade</title>
+  <script type="module" crossorigin src="../../assets/brick-breaker-D0aEvkKu.js"></script>
+  <link rel="modulepreload" crossorigin href="../../assets/arcade-C8FtNmIW.js">
+  <link rel="modulepreload" crossorigin href="../../assets/arcade-RycZ2P5o.js">
+  <link rel="stylesheet" crossorigin href="../../assets/arcade-BAbm_KbQ.css">
+</head>
+<body class="game-page">
+  <div class="game-topbar">
+    <a class="back-link" href="../../index.html">&larr; ARCADE</a>
+    <h1 class="game-title">BRICK BREAKER</h1>
+    <div style="width: 116px"></div>
+  </div>
+
+  <div class="hud">
+    <span class="stat">SCORE <b id="score">0</b></span>
+    <span class="stat">LIVES <b id="lives">3</b></span>
+    <span class="stat">LEVEL <b id="level">1</b></span>
+    <span class="stat">HIGH <b id="high">0</b></span>
+  </div>
+
+  <div class="game-stage">
+    <canvas id="game" width="720" height="540"></canvas>
+    <div class="overlay" id="overlay">
+      <h2 id="overlay-title">BRICK BREAKER</h2>
+      <p class="score-line hidden" id="overlay-score"></p>
+      <p id="overlay-msg">Smash every brick across three levels. Tough bricks take two hits &mdash; gold bricks never break.</p>
+      <button class="btn" id="overlay-btn">START</button>
+    </div>
+  </div>
+
+  <p class="hint">
+    Move with <kbd>Mouse</kbd> or <kbd>&larr;</kbd> <kbd>&rarr;</kbd> &middot;
+    Launch with <kbd>Click</kbd> or <kbd>Space</kbd> &middot;
+    Pause with <kbd>P</kbd> / <kbd>Esc</kbd>
+  </p>
+
+</body>
+</html>

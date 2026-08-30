@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arcade Hoops — Arcade</title>
+  <script type="module" crossorigin src="../../assets/basketball-bPP-xbMB.js"></script>
+  <link rel="modulepreload" crossorigin href="../../assets/arcade-C8FtNmIW.js">
+  <link rel="modulepreload" crossorigin href="../../assets/arcade-RycZ2P5o.js">
+  <link rel="modulepreload" crossorigin href="../../assets/three.module-B1IoTK6d.js">
+  <link rel="stylesheet" crossorigin href="../../assets/arcade-BAbm_KbQ.css">
+</head>
+<body class="game-page">
+  <div class="game-topbar">
+    <a class="back-link" href="../../index.html">&larr; ARCADE</a>
+    <h1 class="game-title">ARCADE HOOPS</h1>
+    <div style="width: 96px"></div>
+  </div>
+
+  <div class="hud">
+    <span class="stat">SCORE <b id="hud-score">0</b></span>
+    <span class="stat">TIME <b id="hud-time">1:00</b></span>
+    <span class="stat">STREAK <b id="hud-streak">0</b></span>
+    <span class="stat">BEST <b id="hud-high">0</b></span>
+  </div>
+
+  <div class="game-stage" id="stage">
+    <div class="overlay" id="start-overlay">
+      <h2>ARCADE HOOPS</h2>
+      <p>
+        60 seconds on the clock. Buckets are <strong>2 points</strong>, clean
+        swishes are <strong>3</strong>. Sink 3 in a row to go
+        <strong>ON&nbsp;FIRE</strong> for bonus points!
+      </p>
+      <p>
+        <strong>Drag</strong> up on the lane to aim &amp; shoot &mdash; watch the
+        ghost arc. Or hold <kbd>Space</kbd> to charge the power meter and
+        release to fire.
+      </p>
+      <button class="btn" id="start-btn">START ROUND</button>
+    </div>
+
+    <div class="overlay hidden" id="end-overlay">
+      <h2 id="end-title">TIME UP!</h2>
+      <p class="score-line" id="end-score">SCORE 0</p>
+      <p class="score-line" id="end-streak" style="color: var(--neon-cyan)">BEST STREAK 0</p>
+      <p class="score-line" id="end-high" style="color: var(--neon-pink)">HIGH SCORE 0</p>
+      <button class="btn" id="again-btn">PLAY AGAIN</button>
+    </div>
+  </div>
+
+  <p class="hint">
+    <strong>Drag &amp; release</strong> on the lane to shoot &mdash; drag length is power,
+    drag left/right to aim. Keyboard: hold <kbd>Space</kbd> to charge, release to shoot,
+    <kbd>&larr;</kbd>/<kbd>&rarr;</kbd> to aim.
+  </p>
+
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skee-Ball — Arcade</title>
+  <style>
+    /* Skee-ball specific bits */
+    #powerMeter {
+      position: absolute;
+      right: 14px;
+      bottom: 18px;
+      width: 18px;
+      height: 180px;
+      border: 2px solid var(--neon-purple);
+      border-radius: 9px;
+      background: rgba(10, 10, 24, 0.7);
+      overflow: hidden;
+      z-index: 5;
+    }
+    #powerMeter.hidden { display: none; }
+    #powerFill {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      height: 0%;
+      background: linear-gradient(to top, var(--neon-cyan), var(--neon-yellow), var(--neon-pink));
+      transition: none;
+    }
+    #powerMeter::after {
+      /* sweet-spot tick for the 50 window */
+      content: '';
+      position: absolute;
+      left: 0; right: 0;
+      bottom: 55%;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.75);
+    }
+    .balls-row b { letter-spacing: 2px; }
+  </style>
+  <script type="module" crossorigin src="../../assets/skeeball-CPIsL9y0.js"></script>
+  <link rel="modulepreload" crossorigin href="../../assets/arcade-C8FtNmIW.js">
+  <link rel="modulepreload" crossorigin href="../../assets/arcade-RycZ2P5o.js">
+  <link rel="modulepreload" crossorigin href="../../assets/three.module-B1IoTK6d.js">
+  <link rel="modulepreload" crossorigin href="../../assets/cannon-es-DaatJKnc.js">
+  <link rel="stylesheet" crossorigin href="../../assets/arcade-BAbm_KbQ.css">
+</head>
+<body class="game-page">
+  <div class="game-topbar">
+    <a class="back-link" href="../../index.html">&larr; ARCADE</a>
+    <h1 class="game-title">SKEE-BALL</h1>
+    <div style="width:96px"></div>
+  </div>
+
+  <div class="hud">
+    <span class="stat">SCORE <b id="hudScore">0</b></span>
+    <span class="stat balls-row">BALLS <b id="hudBalls">&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;</b></span>
+    <span class="stat">HIGH <b id="hudHigh">0</b></span>
+  </div>
+
+  <div class="game-stage" id="stage">
+    <div id="powerMeter" class="hidden"><div id="powerFill"></div></div>
+
+    <div class="overlay" id="startOverlay">
+      <h2>SKEE-BALL</h2>
+      <p>
+        Roll 9 balls up the alley and over the hill into the rings.
+        50 sits dead center &mdash; the tiny 100 pockets hide in the top corners.
+      </p>
+      <p>
+        <b>Mouse:</b> press near the bottom, drag upward and release to flick &mdash;
+        faster flick, harder roll. Drag sideways to aim.<br />
+        <b>Keys:</b> hold <kbd>Space</kbd> to charge the meter, <kbd>&larr;</kbd>/<kbd>&rarr;</kbd> to aim, release to roll.
+      </p>
+      <button class="btn" id="startBtn">INSERT COIN</button>
+    </div>
+
+    <div class="overlay hidden" id="overOverlay">
+      <h2>GAME OVER</h2>
+      <div class="score-line" id="finalScore">SCORE 0</div>
+      <p id="rankLine">Warming up.</p>
+      <div class="score-line" id="newHigh" style="color: var(--neon-green);"></div>
+      <button class="btn" id="againBtn">PLAY AGAIN</button>
+    </div>
+  </div>
+
+  <p class="hint">
+    Flick: drag up from the lane and let go &bull; or hold <kbd>Space</kbd> to charge,
+    <kbd>&larr;</kbd>/<kbd>&rarr;</kbd> to aim &bull; bank shots off the rails are legal
+  </p>
+
+</body>
+</html>

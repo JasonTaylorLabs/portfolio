@@ -1,3 +1,4 @@
+import { Arcade } from './components/Arcade'
 import { Companies } from './components/Companies'
 import { Contact } from './components/Contact'
 import { Footer } from './components/Footer'
@@ -14,6 +15,7 @@ function App() {
         <Gallery />
         <Companies />
         <Skills />
+        <Arcade />
         <Contact />
       </main>
       <Footer />

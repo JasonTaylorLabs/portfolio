@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arcade — Jason Schneider</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 48px 24px 64px;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(160, 107, 255, 0.18), transparent),
+        var(--bg);
+      min-height: 100%;
+    }
+    .marquee {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(24px, 6vw, 48px);
+      text-align: center;
+      color: var(--neon-yellow);
+      text-shadow: 0 0 24px rgba(255, 210, 63, 0.5), 0 0 60px rgba(255, 45, 120, 0.3);
+      margin-bottom: 12px;
+      letter-spacing: 2px;
+    }
+    .tagline { color: var(--text-dim); margin-bottom: 48px; text-align: center; }
+    .cabinet-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+      width: 100%;
+      max-width: 1100px;
+    }
+    .cabinet {
+      display: block;
+      text-decoration: none;
+      color: var(--text);
+      background: var(--bg-panel);
+      border: 2px solid #26264a;
+      border-radius: 14px;
+      padding: 24px;
+      transition: transform 0.15s ease, border-color 0.15s, box-shadow 0.15s;
+    }
+    .cabinet:hover {
+      transform: translateY(-6px);
+      border-color: var(--accent);
+      box-shadow: 0 0 30px color-mix(in srgb, var(--accent) 35%, transparent);
+    }
+    .cabinet .icon { font-size: 44px; margin-bottom: 16px; }
+    .cabinet h2 {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 14px;
+      color: var(--accent);
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+    .cabinet p { color: var(--text-dim); font-size: 14px; line-height: 1.6; margin-bottom: 14px; }
+    .cabinet .hi {
+      display: none;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 10px;
+      color: var(--neon-yellow);
+      margin-bottom: 14px;
+    }
+    .cabinet .hi.shown { display: block; }
+    .cabinet .tech {
+      display: inline-block;
+      font-size: 11px;
+      color: var(--text-dim);
+      border: 1px solid #33335a;
+      border-radius: 99px;
+      padding: 3px 10px;
+    }
+    footer { margin-top: 56px; color: var(--text-dim); font-size: 13px; }
+  </style>
+  <script type="module" crossorigin src="./assets/main-zvaNN460.js"></script>
+  <link rel="modulepreload" crossorigin href="./assets/arcade-C8FtNmIW.js">
+  <link rel="stylesheet" crossorigin href="./assets/arcade-BAbm_KbQ.css">
+</head>
+<body>
+  <h1 class="marquee">ARCADE</h1>
+  <p class="tagline">Five playable browser games — built with Canvas, Three.js, and physics. Insert coin.</p>
+
+  <div class="cabinet-grid">
+    <a class="cabinet" href="./games/brick-breaker/index.html" style="--accent: var(--neon-pink)">
+      <div class="icon">🧱</div>
+      <h2>Brick Breaker</h2>
+      <p>Smash through 3 levels of neon bricks. Multi-hit bricks, speed ramps, and a paddle with edge english.</p>
+      <div class="hi" data-hi="brick-breaker"></div>
+      <span class="tech">Canvas 2D</span>
+    </a>
+
+    <a class="cabinet" href="./games/chomp/index.html" style="--accent: var(--neon-yellow)">
+      <div class="icon">👻</div>
+      <h2>Chomp</h2>
+      <p>A maze-chase homage to the classics. Eat every pellet, grab power-ups, and turn the tables on four ghosts.</p>
+      <div class="hi" data-hi="chomp"></div>
+      <span class="tech">Canvas 2D</span>
+    </a>
+
+    <a class="cabinet" href="./games/basketball/index.html" style="--accent: var(--neon-green)">
+      <div class="icon">🏀</div>
+      <h2>Arcade Hoops</h2>
+      <p>60-second pop-a-shot. Drag, aim, and sink as many buckets as you can. Streaks light the rim on fire.</p>
+      <div class="hi" data-hi="basketball"></div>
+      <span class="tech">Three.js</span>
+    </a>
+
+    <a class="cabinet" href="./games/mini-golf/index.html" style="--accent: var(--neon-cyan)">
+      <div class="icon">⛳</div>
+      <h2>Mini Golf</h2>
+      <p>A 6-hole putting course with ramps, walls, and sand. Pull back, line up the shot, and beat par.</p>
+      <div class="hi" data-hi="mini-golf-best"></div>
+      <span class="tech">Three.js + cannon-es</span>
+    </a>
+
+    <a class="cabinet" href="./games/skeeball/index.html" style="--accent: var(--neon-purple)">
+      <div class="icon">🎯</div>
+      <h2>Skee-Ball</h2>
+      <p>Nine balls, one lane. Flick to roll up the ramp and land the 100-point corner pockets.</p>
+      <div class="hi" data-hi="skeeball"></div>
+      <span class="tech">Three.js + cannon-es</span>
+    </a>
+  </div>
+
+  <footer>Built by Jason Schneider · High scores saved locally</footer>
+
+</body>
+</html>

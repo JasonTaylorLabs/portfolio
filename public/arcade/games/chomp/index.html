@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Chomp — Arcade</title>
+  <script type="module" crossorigin src="../../assets/chomp-Db-5WKOP.js"></script>
+  <link rel="modulepreload" crossorigin href="../../assets/arcade-C8FtNmIW.js">
+  <link rel="modulepreload" crossorigin href="../../assets/arcade-RycZ2P5o.js">
+  <link rel="stylesheet" crossorigin href="../../assets/arcade-BAbm_KbQ.css">
+</head>
+<body class="game-page">
+  <div class="game-topbar">
+    <a class="back-link" href="../../index.html">&larr; ARCADE</a>
+    <h1 class="game-title">CHOMP</h1>
+    <div style="width:110px"></div>
+  </div>
+
+  <div class="hud">
+    <span class="stat">SCORE <b id="hudScore">0</b></span>
+    <span class="stat">LIVES <b id="hudLives">3</b></span>
+    <span class="stat">LEVEL <b id="hudLevel">1</b></span>
+    <span class="stat">HIGH <b id="hudHigh">0</b></span>
+  </div>
+
+  <div class="game-stage">
+    <canvas id="game" width="504" height="552"></canvas>
+    <div class="overlay" id="overlay">
+      <h2 id="overlayTitle">CHOMP</h2>
+      <p id="overlayText">
+        Gobble every pellet in the maze while four ghosts hunt you down.
+        Grab a power pellet to turn the tables and chomp them right back —
+        chains score 200, 400, 800, 1600. Extra life at 10,000.
+      </p>
+      <div class="score-line" id="overlayScore" hidden></div>
+      <button class="btn" id="overlayBtn">START</button>
+    </div>
+  </div>
+
+  <p class="hint">
+    Move: <kbd>&larr;</kbd><kbd>&uarr;</kbd><kbd>&darr;</kbd><kbd>&rarr;</kbd> or
+    <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> &middot;
+    Pause: <kbd>P</kbd> / <kbd>Esc</kbd> &middot;
+    Use the side tunnels to slip away — ghosts are slow in there.
+  </p>
+
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mini Golf — Arcade</title>
+    <style>
+      /* Page-specific bits: scorecard table + toast */
+      #scorecard table {
+        border-collapse: collapse;
+        font-family: 'Press Start 2P', monospace;
+        font-size: 11px;
+        margin: 0 auto;
+      }
+      #scorecard th,
+      #scorecard td {
+        padding: 6px 14px;
+        text-align: center;
+        border-bottom: 1px solid #26264a;
+        color: var(--text-dim);
+      }
+      #scorecard th { color: var(--neon-cyan); }
+      #scorecard tfoot td {
+        color: var(--text);
+        border-top: 2px solid #33335a;
+        border-bottom: none;
+      }
+      #scorecard td.under { color: var(--neon-green); }
+      #scorecard td.even { color: var(--neon-yellow); }
+      #scorecard td.over { color: var(--neon-pink); }
+      .new-best { color: var(--neon-green); }
+      #toast {
+        position: absolute;
+        top: 18px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-family: 'Press Start 2P', monospace;
+        font-size: 12px;
+        color: var(--neon-pink);
+        background: rgba(6, 6, 16, 0.85);
+        border: 2px solid var(--neon-pink);
+        border-radius: 6px;
+        padding: 10px 16px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s;
+        z-index: 5;
+        white-space: nowrap;
+      }
+      #toast.show { opacity: 1; }
+      #stage canvas { cursor: crosshair; touch-action: none; }
+      #pause-veil {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Press Start 2P', monospace;
+        font-size: 22px;
+        letter-spacing: 8px;
+        color: var(--text);
+        text-shadow: 0 0 12px var(--neon-cyan);
+        background: rgba(6, 6, 16, 0.55);
+        z-index: 4;
+        pointer-events: none; /* the resume click must reach the canvas */
+      }
+      #pause-veil.hidden { display: none; }
+    </style>
+    <script type="module" crossorigin src="../../assets/mini-golf-1vIhGiSW.js"></script>
+    <link rel="modulepreload" crossorigin href="../../assets/arcade-C8FtNmIW.js">
+    <link rel="modulepreload" crossorigin href="../../assets/arcade-RycZ2P5o.js">
+    <link rel="modulepreload" crossorigin href="../../assets/three.module-B1IoTK6d.js">
+    <link rel="modulepreload" crossorigin href="../../assets/cannon-es-DaatJKnc.js">
+    <link rel="stylesheet" crossorigin href="../../assets/arcade-BAbm_KbQ.css">
+  </head>
+  <body class="game-page">
+    <div class="game-topbar">
+      <a class="back-link" href="../../index.html">&larr; ARCADE</a>
+      <h1 class="game-title">MINI GOLF</h1>
+      <div style="width: 92px"></div>
+    </div>
+
+    <div class="hud">
+      <span class="stat">HOLE <b id="hud-hole">1/6</b></span>
+      <span class="stat">PAR <b id="hud-par">2</b></span>
+      <span class="stat">STROKES <b id="hud-strokes">0</b></span>
+      <span class="stat">TOTAL <b id="hud-total">0 (E)</b></span>
+      <span class="stat">BEST <b id="hud-best">—</b></span>
+    </div>
+
+    <div class="game-stage" id="stage">
+      <div id="toast"></div>
+      <div id="pause-veil" class="hidden">PAUSED</div>
+
+      <div class="overlay" id="overlay-start">
+        <h2>MINI GOLF</h2>
+        <p>
+          A 6-hole neon putting course. Doglegs, hills, sand traps and one
+          leap of faith. Fewest strokes wins.
+        </p>
+        <p class="score-line" id="start-best">BEST: —</p>
+        <button class="btn" id="start-btn">TEE OFF</button>
+      </div>
+
+      <div class="overlay hidden" id="overlay-hole">
+        <h2 id="hole-title">HOLE 1 — PAR 2</h2>
+        <p class="score-line" id="hole-score"></p>
+        <button class="btn" id="next-btn">NEXT HOLE</button>
+      </div>
+
+      <div class="overlay hidden" id="overlay-course">
+        <h2>COURSE COMPLETE</h2>
+        <div id="scorecard"></div>
+        <p class="score-line" id="course-score"></p>
+        <button class="btn" id="again-btn">PLAY AGAIN</button>
+      </div>
+    </div>
+
+    <p class="hint">
+      Click and drag to pull back your putt — the arrow shows direction and
+      power. Release to hit, <kbd>Esc</kbd> cancels a drag. Watch out for sand,
+      and don't fall off the island (+1 stroke). Max 8 strokes per hole.
+    </p>
+
+  </body>
+</html>
