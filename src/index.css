@@ -48,6 +48,14 @@ body {
   background-size: 240px 240px;
 }
 
+/* Hide the scrollbar on horizontal carousels (they remain scroll/swipe-able). */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
