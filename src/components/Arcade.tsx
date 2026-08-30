@@ -1,8 +1,10 @@
+import { useEffect, useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
 import { Reveal } from './Reveal'
 
 const arcadeUrl = (path: string) => `${import.meta.env.BASE_URL}arcade/${path}`
 const shotUrl = (name: string) => `${import.meta.env.BASE_URL}arcade-shots/${name}.jpg`
+const clipUrl = (name: string) => `${import.meta.env.BASE_URL}arcade-shots/${name}.mp4`
 
 const GAMES = [
   {
@@ -42,7 +44,7 @@ const GAMES = [
     tech: 'Three.js · physics',
     path: 'games/mini-golf/',
     shot: 'mini-golf',
-    alt: 'Mini Golf gameplay — lining up a putt across a dogleg hole with the aim arrow pointed at the flag',
+    alt: 'Mini Golf gameplay — a putt rolling up the green and dropping into the cup by the flag',
     glow: '#4ade80',
   },
   {
@@ -58,11 +60,97 @@ const GAMES = [
 ]
 
 /**
+ * One shared IntersectionObserver drives play/pause for every cabinet clip:
+ * a clip only runs while its card is actually on screen (battery, politeness).
+ */
+const inViewCallbacks = new WeakMap<Element, (inView: boolean) => void>()
+let clipObserver: IntersectionObserver | null = null
+
+function observeClip(el: Element, cb: (inView: boolean) => void) {
+  clipObserver ??= new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) inViewCallbacks.get(entry.target)?.(entry.isIntersecting)
+    },
+    { threshold: 0.2 }
+  )
+  inViewCallbacks.set(el, cb)
+  clipObserver.observe(el)
+  return () => {
+    inViewCallbacks.delete(el)
+    clipObserver?.unobserve(el)
+  }
+}
+
+/**
+ * Short looping gameplay clip for one cabinet. Muted + playsInline so iOS
+ * autoplays it; preload="none" + poster (the original gameplay still) so the
+ * initial page load fetches no video at all. Autoplay is skipped entirely for
+ * prefers-reduced-motion, and any load/decode failure falls back to the still.
+ */
+function CabinetClip({ shot, alt }: { shot: string; alt: string }) {
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const [failed, setFailed] = useState(false)
+
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video || failed) return
+
+    // React doesn't render the `muted` attribute itself; iOS requires it (or
+    // the properties below) before it will autoplay.
+    video.muted = true
+    video.defaultMuted = true
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+    let unobserve: (() => void) | undefined
+
+    const apply = () => {
+      if (reduceMotion.matches) {
+        unobserve?.()
+        unobserve = undefined
+        video.pause() // stay on the poster
+      } else {
+        unobserve ??= observeClip(video, (inView) => {
+          if (inView) video.play().catch(() => {}) // autoplay veto -> poster stays
+          else video.pause()
+        })
+      }
+    }
+    apply()
+    reduceMotion.addEventListener('change', apply)
+    return () => {
+      reduceMotion.removeEventListener('change', apply)
+      unobserve?.()
+    }
+  }, [failed])
+
+  const className =
+    'h-full w-full object-cover transition-transform duration-500 ease-out motion-safe:group-hover:scale-[1.045]'
+
+  if (failed) {
+    return <img src={shotUrl(shot)} alt={alt} loading="lazy" className={className} />
+  }
+  return (
+    <video
+      ref={videoRef}
+      src={clipUrl(shot)}
+      poster={shotUrl(shot)}
+      muted
+      playsInline
+      loop
+      preload="none"
+      aria-label={alt}
+      onError={() => setFailed(true)}
+      className={className}
+    />
+  )
+}
+
+/**
  * Playable browser games, built from scratch and bundled into the site as a
  * static sub-app (public/arcade). The one dark band on the page: each game is
- * previewed with a real mid-gameplay screenshot (public/arcade-shots) on an
- * arcade-cabinet card that glows in the game's neon accent. Clicking a card
- * opens the game itself.
+ * previewed with a short looping gameplay clip (public/arcade-shots, with the
+ * matching still as its poster) on an arcade-cabinet card that glows in the
+ * game's neon accent. Clicking a card opens the game itself.
  */
 export function Arcade() {
   return (
@@ -108,12 +196,7 @@ export function Arcade() {
                   className="group relative block overflow-hidden rounded-2xl border border-ink/10 bg-white/[0.02] transition-[border-color,box-shadow,transform] duration-300 hover:border-(--glow) hover:shadow-[0_0_50px_-12px_var(--glow)] motion-safe:hover:-translate-y-1"
                 >
                   <div className="relative aspect-[3/4] overflow-hidden bg-[#0b0d14]">
-                    <img
-                      src={shotUrl(game.shot)}
-                      alt={game.alt}
-                      loading="lazy"
-                      className="h-full w-full object-cover transition-transform duration-500 ease-out motion-safe:group-hover:scale-[1.045]"
-                    />
+                    <CabinetClip shot={game.shot} alt={game.alt} />
                     {/* Faint CRT scanlines over the screen */}
                     <div
                       aria-hidden="true"
