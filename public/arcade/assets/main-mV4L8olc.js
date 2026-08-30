@@ -1,0 +1,1 @@
+import"./arcade-CO18l40I.js";for(let e of document.querySelectorAll(`.hi[data-hi]`))try{let t=localStorage.getItem(`arcade:`+e.dataset.hi);if(t===null)continue;let n=Number(t);if(!Number.isFinite(n)||n<=0)continue;e.textContent=e.dataset.hi===`mini-golf-best`?`BEST ${n} STROKES`:`HI-SCORE ${n}`,e.classList.add(`shown`)}catch{}
