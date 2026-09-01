@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#1a1240" />
+  <title>Disneyland Paris — GPS Map</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏰</text></svg>" />
+  <link rel="stylesheet" href="vendor/leaflet.css" />
+  <style>
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; overscroll-behavior: none; }
+    #map { position: fixed; inset: 0; z-index: 0; background: #d4e6c8; }
+
+    /* ---- Search bar ---- */
+    #search-wrap {
+      position: fixed; z-index: 1000;
+      top: calc(env(safe-area-inset-top, 0px) + 12px);
+      left: 12px; right: 12px; max-width: 480px; margin: 0 auto;
+    }
+    #search-box {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.97); border-radius: 14px;
+      box-shadow: 0 4px 18px rgba(20,15,60,0.25);
+      padding: 12px 14px;
+    }
+    #search-box .castle { font-size: 20px; }
+    #search-input {
+      flex: 1; border: none; outline: none; background: transparent;
+      font-size: 16px; /* 16px prevents iOS zoom-on-focus */
+      color: #1a1240; appearance: none; -webkit-appearance: none;
+    }
+    #search-input::-webkit-search-cancel-button,
+    #search-input::-webkit-search-decoration { -webkit-appearance: none; display: none; }
+    #search-clear {
+      border: none; background: #ece9f7; color: #5a4fa0; border-radius: 50%;
+      width: 26px; height: 26px; font-size: 14px; line-height: 1; cursor: pointer;
+      display: none; flex: 0 0 auto;
+    }
+    #results {
+      margin-top: 8px; background: rgba(255,255,255,0.98); border-radius: 14px;
+      box-shadow: 0 6px 22px rgba(20,15,60,0.28); overflow: hidden;
+      max-height: 46vh; overflow-y: auto; -webkit-overflow-scrolling: touch;
+      display: none;
+    }
+    .result {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 14px; cursor: pointer; border-bottom: 1px solid #f0eef8;
+    }
+    .result:last-child { border-bottom: none; }
+    .result:active { background: #f3f0ff; }
+    .result .icon { font-size: 20px; width: 26px; text-align: center; }
+    .result .name { font-size: 15px; font-weight: 600; color: #1a1240; }
+    .result .land { font-size: 12px; color: #7a72a8; }
+    .result .dist { margin-left: auto; font-size: 12px; font-weight: 600; color: #5a4fa0; white-space: nowrap; }
+    .no-results { padding: 14px; font-size: 14px; color: #7a72a8; text-align: center; }
+
+    /* ---- Locate button ---- */
+    #locate-btn {
+      position: fixed; z-index: 900; right: 14px;
+      bottom: calc(env(safe-area-inset-bottom, 0px) + 24px);
+      width: 52px; height: 52px; border-radius: 50%;
+      border: none; background: #fff; box-shadow: 0 4px 14px rgba(20,15,60,0.3);
+      font-size: 22px; cursor: pointer; transition: transform 0.1s;
+    }
+    #locate-btn:active { transform: scale(0.92); }
+    #locate-btn.active { background: #4f46e5; }
+
+    /* ---- Bottom directions sheet ---- */
+    #sheet {
+      position: fixed; z-index: 950; left: 0; right: 0; bottom: 0;
+      background: rgba(255,255,255,0.98);
+      border-radius: 20px 20px 0 0;
+      box-shadow: 0 -6px 24px rgba(20,15,60,0.3);
+      padding: 16px 18px calc(env(safe-area-inset-bottom, 0px) + 16px);
+      max-width: 560px; margin: 0 auto;
+      transform: translateY(110%); transition: transform 0.25s ease;
+    }
+    #sheet.open { transform: translateY(0); }
+    #sheet .grab { width: 40px; height: 4px; border-radius: 2px; background: #ddd8ee; margin: 0 auto 12px; }
+    #sheet-title { display: flex; align-items: center; gap: 10px; }
+    #sheet-title .icon { font-size: 26px; }
+    #sheet-title h2 { margin: 0; font-size: 17px; color: #1a1240; }
+    #sheet-title .land { font-size: 12px; color: #7a72a8; }
+    #sheet-close {
+      margin-left: auto; border: none; background: #ece9f7; color: #5a4fa0;
+      border-radius: 50%; width: 30px; height: 30px; font-size: 15px; cursor: pointer; flex: 0 0 auto;
+    }
+    #sheet-stats { display: flex; gap: 18px; margin: 12px 0 4px; }
+    #sheet-stats .stat b { display: block; font-size: 20px; color: #1a1240; }
+    #sheet-stats .stat span { font-size: 11px; color: #7a72a8; text-transform: uppercase; letter-spacing: 0.05em; }
+    #sheet-status { font-size: 13px; color: #7a72a8; margin: 6px 0 12px; min-height: 17px; }
+    #sheet-actions { display: flex; gap: 10px; }
+    #sheet-actions a, #sheet-actions button {
+      flex: 1; text-align: center; text-decoration: none; cursor: pointer;
+      padding: 13px 10px; border-radius: 12px; font-size: 14px; font-weight: 600; border: none;
+    }
+    #btn-go { background: #4f46e5; color: #fff; }
+    #btn-apple { background: #1a1240; color: #fff; display: none; }
+
+    /* ---- Toast ---- */
+    #toast {
+      position: fixed; z-index: 1100; left: 50%; transform: translateX(-50%);
+      bottom: calc(env(safe-area-inset-bottom, 0px) + 96px);
+      background: rgba(26,18,64,0.92); color: #fff; font-size: 14px;
+      padding: 10px 18px; border-radius: 12px; max-width: 86vw; text-align: center;
+      opacity: 0; transition: opacity 0.25s; pointer-events: none;
+    }
+    #toast.show { opacity: 1; }
+
+    /* ---- Map markers ---- */
+    .attraction-marker { font-size: 22px; text-align: center; line-height: 1;
+      filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4)); }
+    .attraction-marker.selected { font-size: 30px; }
+    .user-dot {
+      width: 16px; height: 16px; border-radius: 50%;
+      background: #2f7cf6; border: 3px solid #fff;
+      box-shadow: 0 0 0 2px rgba(47,124,246,0.35), 0 2px 6px rgba(0,0,0,0.4);
+    }
+    .leaflet-popup-content-wrapper { border-radius: 12px; }
+    .leaflet-popup-content { margin: 10px 14px; font-size: 14px; }
+    .popup-name { font-weight: 700; color: #1a1240; }
+    .popup-land { font-size: 12px; color: #7a72a8; margin-bottom: 6px; }
+    .popup-btn {
+      display: inline-block; background: #4f46e5; color: #fff !important;
+      border-radius: 8px; padding: 6px 12px; font-size: 13px; font-weight: 600;
+      text-decoration: none; cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <div id="search-wrap">
+    <div id="search-box">
+      <span class="castle">🏰</span>
+      <input id="search-input" type="search" placeholder="Search an attraction…"
+             autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+      <button id="search-clear" aria-label="Clear search">✕</button>
+    </div>
+    <div id="results"></div>
+  </div>
+
+  <button id="locate-btn" aria-label="Show my location">📍</button>
+
+  <div id="sheet">
+    <div class="grab"></div>
+    <div id="sheet-title">
+      <span class="icon" id="sheet-icon">🎢</span>
+      <div>
+        <h2 id="sheet-name"></h2>
+        <div class="land" id="sheet-land"></div>
+      </div>
+      <button id="sheet-close" aria-label="Close">✕</button>
+    </div>
+    <div id="sheet-stats">
+      <div class="stat"><b id="stat-dist">–</b><span>Distance</span></div>
+      <div class="stat"><b id="stat-time">–</b><span>Walk time</span></div>
+    </div>
+    <div id="sheet-status"></div>
+    <div id="sheet-actions">
+      <button id="btn-go">Get directions</button>
+      <a id="btn-apple" target="_blank" rel="noopener">Open in Maps</a>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script src="vendor/leaflet.js"></script>
+  <script>
+  'use strict';
+
+  // ---------------------------------------------------------------
+  // Disneyland Park (Paris) attractions.
+  // Coordinates are approximate (good to ~20-30 m) — fine for GPS testing.
+  // ---------------------------------------------------------------
+  const ATTRACTIONS = [
+    // Main Street, U.S.A.
+    { name: "Park Entrance (Main Gates)",                       land: "Main Street, U.S.A.", icon: "🎟️", lat: 48.87060, lng: 2.77870 },
+    { name: "Disneyland Railroad — Main Street Station",        land: "Main Street, U.S.A.", icon: "🚂", lat: 48.87120, lng: 2.77815 },
+    { name: "Horse-Drawn Streetcars",                           land: "Main Street, U.S.A.", icon: "🐴", lat: 48.87200, lng: 2.77700 },
+    // Fantasyland
+    { name: "Sleeping Beauty Castle (Le Château de la Belle au Bois Dormant)", land: "Fantasyland", icon: "🏰", lat: 48.87280, lng: 2.77565 },
+    { name: "It's a Small World",                               land: "Fantasyland", icon: "🌍", lat: 48.87475, lng: 2.77450 },
+    { name: "Peter Pan's Flight",                               land: "Fantasyland", icon: "🧚", lat: 48.87370, lng: 2.77477 },
+    { name: "Dumbo the Flying Elephant",                        land: "Fantasyland", icon: "🐘", lat: 48.87406, lng: 2.77520 },
+    { name: "Mad Hatter's Tea Cups",                            land: "Fantasyland", icon: "🍵", lat: 48.87433, lng: 2.77585 },
+    { name: "Alice's Curious Labyrinth",                        land: "Fantasyland", icon: "🃏", lat: 48.87454, lng: 2.77650 },
+    { name: "Snow White and the Seven Dwarfs (Blanche-Neige et les Sept Nains)", land: "Fantasyland", icon: "🍎", lat: 48.87345, lng: 2.77468 },
+    { name: "Les Voyages de Pinocchio",                         land: "Fantasyland", icon: "🤥", lat: 48.87357, lng: 2.77437 },
+    { name: "Le Carrousel de Lancelot",                         land: "Fantasyland", icon: "🎠", lat: 48.87334, lng: 2.77522 },
+    { name: "Casey Jr. — Le Petit Train du Cirque",             land: "Fantasyland", icon: "🎪", lat: 48.87403, lng: 2.77300 },
+    { name: "Le Pays des Contes de Fées (Storybook Canal Boats)", land: "Fantasyland", icon: "⛵", lat: 48.87440, lng: 2.77340 },
+    { name: "Princess Pavilion",                                land: "Fantasyland", icon: "👑", lat: 48.87469, lng: 2.77716 },
+    // Adventureland
+    { name: "Pirates of the Caribbean",                         land: "Adventureland", icon: "🏴‍☠️", lat: 48.87180, lng: 2.77327 },
+    { name: "Indiana Jones et le Temple du Péril",              land: "Adventureland", icon: "🐍", lat: 48.87195, lng: 2.77180 },
+    { name: "La Cabane des Robinson (Swiss Family Treehouse)",  land: "Adventureland", icon: "🌳", lat: 48.87242, lng: 2.77362 },
+    { name: "Adventure Isle",                                   land: "Adventureland", icon: "🗺️", lat: 48.87252, lng: 2.77330 },
+    { name: "Le Passage Enchanté d'Aladdin",                    land: "Adventureland", icon: "🪔", lat: 48.87218, lng: 2.77410 },
+    // Frontierland
+    { name: "Big Thunder Mountain",                             land: "Frontierland", icon: "⛰️", lat: 48.87295, lng: 2.77085 },
+    { name: "Phantom Manor",                                    land: "Frontierland", icon: "👻", lat: 48.87370, lng: 2.77135 },
+    { name: "Thunder Mesa Riverboat Landing",                   land: "Frontierland", icon: "🛥️", lat: 48.87346, lng: 2.77163 },
+    { name: "Rustler Roundup Shootin' Gallery",                 land: "Frontierland", icon: "🤠", lat: 48.87305, lng: 2.77226 },
+    // Discoveryland
+    { name: "Star Wars Hyperspace Mountain",                    land: "Discoveryland", icon: "🚀", lat: 48.87345, lng: 2.77935 },
+    { name: "Buzz Lightyear Laser Blast",                       land: "Discoveryland", icon: "🔫", lat: 48.87336, lng: 2.77820 },
+    { name: "Star Tours: The Adventures Continue",              land: "Discoveryland", icon: "🛸", lat: 48.87296, lng: 2.77861 },
+    { name: "Orbitron",                                         land: "Discoveryland", icon: "🪐", lat: 48.87300, lng: 2.77783 },
+    { name: "Autopia",                                          land: "Discoveryland", icon: "🏎️", lat: 48.87368, lng: 2.77962 },
+    { name: "Les Mystères du Nautilus",                         land: "Discoveryland", icon: "🐙", lat: 48.87330, lng: 2.77870 },
+  ];
+
+  const PARK_CENTER = [48.87280, 2.77650];
+
+  // ---------------------------------------------------------------
+  // Map setup
+  // ---------------------------------------------------------------
+  const map = L.map('map', { zoomControl: false, attributionControl: false })
+    .setView(PARK_CENTER, 16);
+  L.control.attribution({ position: 'bottomleft', prefix: false }).addTo(map);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  }).addTo(map);
+
+  const markerByName = new Map();
+  for (const a of ATTRACTIONS) {
+    const icon = L.divIcon({ className: '', html: `<div class="attraction-marker">${a.icon}</div>`, iconSize: [26, 26], iconAnchor: [13, 13] });
+    const m = L.marker([a.lat, a.lng], { icon }).addTo(map);
+    m.bindPopup(
+      `<div class="popup-name">${a.icon} ${a.name}</div>` +
+      `<div class="popup-land">${a.land}</div>` +
+      `<a class="popup-btn" href="#" onclick="selectAttraction(${JSON.stringify(a.name).replace(/"/g, '&quot;')}); return false;">Directions</a>`
+    );
+    markerByName.set(a.name, m);
+  }
+
+  // ---------------------------------------------------------------
+  // Geolocation
+  // ---------------------------------------------------------------
+  let userPos = null;          // { lat, lng, accuracy }
+  let userMarker = null;
+  let accuracyCircle = null;
+  let watchId = null;
+  let firstFix = true;
+
+  const locateBtn = document.getElementById('locate-btn');
+
+  function startTracking() {
+    if (!('geolocation' in navigator)) {
+      toast('Geolocation is not supported by this browser.');
+      return;
+    }
+    if (watchId !== null) {
+      // Already tracking — just recenter on the user.
+      if (userPos) map.setView([userPos.lat, userPos.lng], Math.max(map.getZoom(), 16));
+      return;
+    }
+    toast('Requesting your location…');
+    watchId = navigator.geolocation.watchPosition(onPosition, onPositionError, {
+      enableHighAccuracy: true,
+      maximumAge: 5000,
+      timeout: 20000,
+    });
+    locateBtn.classList.add('active');
+  }
+
+  function onPosition(pos) {
+    userPos = { lat: pos.coords.latitude, lng: pos.coords.longitude, accuracy: pos.coords.accuracy };
+    const ll = [userPos.lat, userPos.lng];
+
+    if (!userMarker) {
+      userMarker = L.marker(ll, {
+        icon: L.divIcon({ className: '', html: '<div class="user-dot"></div>', iconSize: [16, 16], iconAnchor: [8, 8] }),
+        zIndexOffset: 1000,
+      }).addTo(map);
+      accuracyCircle = L.circle(ll, { radius: userPos.accuracy, color: '#2f7cf6', weight: 1, fillOpacity: 0.12 }).addTo(map);
+    } else {
+      userMarker.setLatLng(ll);
+      accuracyCircle.setLatLng(ll).setRadius(userPos.accuracy);
+    }
+
+    if (firstFix) {
+      firstFix = false;
+      const distToPark = haversine(userPos.lat, userPos.lng, PARK_CENTER[0], PARK_CENTER[1]);
+      if (distToPark > 3000) {
+        // Far from the park: show both the user and the park.
+        map.fitBounds(L.latLngBounds(ll, PARK_CENTER).pad(0.2));
+        toast(`You are ${fmtDist(distToPark)} from Disneyland Park.`);
+      } else {
+        map.setView(ll, 17);
+        toast('Location found!');
+      }
+    }
+
+    // Live-refresh directions if a destination is selected.
+    if (selected) updateDirections(false);
+  }
+
+  function onPositionError(err) {
+    locateBtn.classList.remove('active');
+    if (watchId !== null) { navigator.geolocation.clearWatch(watchId); watchId = null; }
+    if (err.code === err.PERMISSION_DENIED) {
+      toast('Location permission denied. Enable it in Settings → Privacy → Location Services → Safari.');
+    } else if (!window.isSecureContext) {
+      toast('GPS requires HTTPS — open this page from the deployed site.');
+    } else {
+      toast('Could not get your location: ' + err.message);
+    }
+  }
+
+  locateBtn.addEventListener('click', startTracking);
+
+  // ---------------------------------------------------------------
+  // Search
+  // ---------------------------------------------------------------
+  const input = document.getElementById('search-input');
+  const resultsEl = document.getElementById('results');
+  const clearBtn = document.getElementById('search-clear');
+
+  const normalize = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+
+  function renderResults(query) {
+    const q = normalize(query.trim());
+    if (!q) { resultsEl.style.display = 'none'; resultsEl.innerHTML = ''; return; }
+    const matches = ATTRACTIONS
+      .filter((a) => normalize(a.name).includes(q) || normalize(a.land).includes(q))
+      .slice(0, 8);
+    resultsEl.style.display = 'block';
+    if (matches.length === 0) {
+      resultsEl.innerHTML = '<div class="no-results">No attraction found — try “castle”, “pirates”, “mountain”…</div>';
+      return;
+    }
+    resultsEl.innerHTML = matches.map((a) => {
+      const dist = userPos ? `<span class="dist">${fmtDist(haversine(userPos.lat, userPos.lng, a.lat, a.lng))}</span>` : '';
+      return `<div class="result" data-name="${a.name.replace(/"/g, '&quot;')}">
+        <span class="icon">${a.icon}</span>
+        <div><div class="name">${a.name}</div><div class="land">${a.land}</div></div>
+        ${dist}
+      </div>`;
+    }).join('');
+  }
+
+  input.addEventListener('input', () => {
+    clearBtn.style.display = input.value ? 'block' : 'none';
+    renderResults(input.value);
+  });
+  input.addEventListener('focus', () => renderResults(input.value));
+  clearBtn.addEventListener('click', () => {
+    input.value = '';
+    clearBtn.style.display = 'none';
+    resultsEl.style.display = 'none';
+    input.focus();
+  });
+  resultsEl.addEventListener('click', (e) => {
+    const row = e.target.closest('.result');
+    if (row) selectAttraction(row.dataset.name);
+  });
+  document.addEventListener('click', (e) => {
+    if (!document.getElementById('search-wrap').contains(e.target)) resultsEl.style.display = 'none';
+  });
+
+  // ---------------------------------------------------------------
+  // Selection + directions
+  // ---------------------------------------------------------------
+  let selected = null;         // attraction object
+  let routeLine = null;
+  let routeAbort = null;
+  let selectedMarkerName = null;
+
+  const sheet = document.getElementById('sheet');
+  const sheetStatus = document.getElementById('sheet-status');
+
+  function selectAttraction(name) {
+    const a = ATTRACTIONS.find((x) => x.name === name);
+    if (!a) return;
+    selected = a;
+
+    input.value = a.name;
+    clearBtn.style.display = 'block';
+    resultsEl.style.display = 'none';
+    input.blur();
+    map.closePopup();
+
+    // Highlight the chosen marker.
+    if (selectedMarkerName && markerByName.get(selectedMarkerName)) {
+      const prev = markerByName.get(selectedMarkerName);
+      prev.getElement()?.querySelector('.attraction-marker')?.classList.remove('selected');
+    }
+    selectedMarkerName = name;
+    markerByName.get(name)?.getElement()?.querySelector('.attraction-marker')?.classList.add('selected');
+
+    document.getElementById('sheet-icon').textContent = a.icon;
+    document.getElementById('sheet-name').textContent = a.name;
+    document.getElementById('sheet-land').textContent = a.land;
+    sheet.classList.add('open');
+
+    if (userPos) {
+      updateDirections(true);
+    } else {
+      document.getElementById('stat-dist').textContent = '–';
+      document.getElementById('stat-time').textContent = '–';
+      sheetStatus.textContent = 'Tap “Get directions” to share your location.';
+      map.setView([a.lat, a.lng], 17);
+    }
+  }
+  window.selectAttraction = selectAttraction; // used by marker popups
+
+  document.getElementById('btn-go').addEventListener('click', () => {
+    startTracking();
+    if (userPos && selected) updateDirections(true);
+  });
+
+  document.getElementById('sheet-close').addEventListener('click', () => {
+    sheet.classList.remove('open');
+    selected = null;
+    if (routeLine) { map.removeLayer(routeLine); routeLine = null; }
+    if (selectedMarkerName) {
+      markerByName.get(selectedMarkerName)?.getElement()?.querySelector('.attraction-marker')?.classList.remove('selected');
+      selectedMarkerName = null;
+    }
+  });
+
+  let lastRouteAt = 0;
+  async function updateDirections(fitMap) {
+    if (!selected || !userPos) return;
+    const a = selected;
+    const straight = haversine(userPos.lat, userPos.lng, a.lat, a.lng);
+
+    // Deep link for native turn-by-turn (Apple Maps on iPhone, walking mode).
+    const appleBtn = document.getElementById('btn-apple');
+    appleBtn.style.display = 'block';
+    appleBtn.href = `https://maps.apple.com/?saddr=${userPos.lat},${userPos.lng}&daddr=${a.lat},${a.lng}&dirflg=w`;
+
+    // Provisional straight-line numbers while the route loads.
+    setStats(straight);
+
+    // Throttle routing requests (live GPS updates can be frequent).
+    const now = Date.now();
+    const force = fitMap === true;
+    if (!force && now - lastRouteAt < 15000) return;
+    lastRouteAt = now;
+
+    if (routeAbort) routeAbort.abort();
+    routeAbort = new AbortController();
+
+    let routed = false;
+    // Only ask the router for plausible walks (< 50 km).
+    if (straight < 50000) {
+      try {
+        const url = `https://routing.openstreetmap.de/routed-foot/route/v1/foot/` +
+          `${userPos.lng},${userPos.lat};${a.lng},${a.lat}?overview=full&geometries=geojson`;
+        const res = await fetch(url, { signal: routeAbort.signal });
+        const data = await res.json();
+        if (data.code === 'Ok' && data.routes && data.routes[0]) {
+          const route = data.routes[0];
+          const coords = route.geometry.coordinates.map(([lng, lat]) => [lat, lng]);
+          drawRoute(coords, false);
+          setStats(route.distance, route.duration);
+          sheetStatus.textContent = 'Walking route via OpenStreetMap paths.';
+          routed = true;
+        }
+      } catch (e) {
+        if (e.name === 'AbortError') return;
+        // fall through to straight line
+      }
+    }
+
+    if (!routed) {
+      drawRoute([[userPos.lat, userPos.lng], [a.lat, a.lng]], true);
+      setStats(straight);
+      sheetStatus.textContent = straight >= 50000
+        ? 'You are far from the park — showing straight-line distance.'
+        : 'Route service unavailable — showing straight line. “Open in Maps” gives turn-by-turn.';
+    }
+
+    if (fitMap && routeLine) {
+      map.fitBounds(routeLine.getBounds().pad(0.25));
+    }
+  }
+
+  function drawRoute(latlngs, dashed) {
+    if (routeLine) map.removeLayer(routeLine);
+    routeLine = L.polyline(latlngs, {
+      color: '#4f46e5', weight: 5, opacity: 0.85,
+      dashArray: dashed ? '8 10' : null,
+      lineCap: 'round',
+    }).addTo(map);
+  }
+
+  function setStats(meters, seconds) {
+    document.getElementById('stat-dist').textContent = fmtDist(meters);
+    const secs = seconds != null ? seconds : meters / 1.33; // ~4.8 km/h walking pace
+    document.getElementById('stat-time').textContent = fmtTime(secs);
+  }
+
+  // ---------------------------------------------------------------
+  // Helpers
+  // ---------------------------------------------------------------
+  function haversine(lat1, lng1, lat2, lng2) {
+    const R = 6371000, rad = Math.PI / 180;
+    const dLat = (lat2 - lat1) * rad, dLng = (lng2 - lng1) * rad;
+    const s = Math.sin(dLat / 2) ** 2 +
+      Math.cos(lat1 * rad) * Math.cos(lat2 * rad) * Math.sin(dLng / 2) ** 2;
+    return 2 * R * Math.asin(Math.sqrt(s));
+  }
+
+  function fmtDist(m) {
+    if (m < 1000) return `${Math.round(m)} m`;
+    return m < 10000 ? `${(m / 1000).toFixed(1)} km` : `${Math.round(m / 1000)} km`;
+  }
+
+  function fmtTime(secs) {
+    const mins = Math.round(secs / 60);
+    if (mins < 1) return '<1 min';
+    if (mins < 60) return `${mins} min`;
+    const h = Math.floor(mins / 60);
+    return `${h} h ${mins % 60} min`;
+  }
+
+  let toastTimer = null;
+  function toast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('show'), 3500);
+  }
+  </script>
+</body>
+</html>
